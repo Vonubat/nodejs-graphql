@@ -14,7 +14,7 @@ export const UserMutations = {
       { dto: data }: { dto: Static<(typeof createUserSchema)['body']> },
       { db }: Context,
     ) => {
-      console.log('DATA', data);
+      console.log('USER_DTO:', data);
       return await db.user.create({ data });
     },
   },
