@@ -8,10 +8,10 @@ import { createUserSchema } from '../../users/schemas.js';
 export const UserMutations = {
   createUser: {
     type: new GraphQLNonNull(UserType),
-    args: { data: { type: CreateUserInput } },
+    args: { dto: { type: CreateUserInput } },
     resolve: async (
       __: unknown,
-      { data }: { data: Static<(typeof createUserSchema)['body']> },
+      { dto: data }: { dto: Static<(typeof createUserSchema)['body']> },
       { db }: Context,
     ) => {
       console.log('DATA', data);
@@ -20,13 +20,20 @@ export const UserMutations = {
   },
   changeUser: {
     type: new GraphQLNonNull(UserType),
-    args: { ...idField, data: { type: CreateUserInput } },
+    args: { ...idField, dto: { type: CreateUserInput } },
     resolve: async (
       __: unknown,
-      { id, data }: { id: string; data: Static<(typeof createUserSchema)['body']> },
+      { id, dto: data }: { id: string; dto: Static<(typeof createUserSchema)['body']> },
       { db }: Context,
     ) => {
       return await db.user.update({ where: { id }, data });
+    },
+  },
+  deleteUser: {
+    type: new GraphQLNonNull(UserType),
+    args: { ...idField },
+    resolve: async (__: unknown, { id }: { id: string }, { db }: Context) => {
+      return await db.user.delete({ where: { id } });
     },
   },
 };
