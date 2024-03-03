@@ -17,6 +17,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
       const { prisma } = fastify;
       const { query, variables } = req.body;
 
+      const dataloaders = new WeakMap();
       const depthLimitErrors = validate(appSchema, parse(query), [depthLimit(5)]);
 
       if (depthLimitErrors.length) {
@@ -29,6 +30,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         variableValues: variables,
         contextValue: {
           db: prisma,
+          dataloaders,
         },
       });
 

@@ -12,6 +12,8 @@ import { PostType } from './posts.js';
 import { ProfileType } from './profiles.js';
 import { Static } from '@sinclair/typebox';
 
+export type User = Static<typeof userSchema>;
+
 const userFields = {
   name: { type: new GraphQLNonNull(GraphQLString) },
   balance: { type: new GraphQLNonNull(GraphQLFloat) },
@@ -22,29 +24,26 @@ const userFieldsPartial = {
   balance: { type: GraphQLFloat },
 };
 
-export const UserType: GraphQLObjectType = new GraphQLObjectType<
-  Static<typeof userSchema>,
-  Context
->({
+export const UserType: GraphQLObjectType = new GraphQLObjectType<User, Context>({
   name: 'UserType',
   fields: () => ({
     ...idField,
     ...userFields,
     posts: {
       type: new GraphQLNonNull(new GraphQLList(PostType)),
-      resolve: async ({ id }: Static<typeof userSchema>, _: unknown, { db }: Context) => {
+      resolve: async ({ id }: User, _: unknown, { db }: Context) => {
         return await db.post.findMany({ where: { authorId: id } });
       },
     },
     profile: {
       type: ProfileType,
-      resolve: async ({ id }: Static<typeof userSchema>, _: unknown, { db }: Context) => {
+      resolve: async ({ id }: User, _: unknown, { db }: Context) => {
         return await db.profile.findUnique({ where: { userId: id } });
       },
     },
     subscribedToUser: {
       type: new GraphQLList(UserType),
-      resolve: async ({ id }: Static<typeof userSchema>, _: unknown, { db }: Context) => {
+      resolve: async ({ id }: User, _: unknown, { db }: Context) => {
         return await db.user.findMany({
           where: {
             userSubscribedTo: {
@@ -58,7 +57,7 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType<
     },
     userSubscribedTo: {
       type: new GraphQLList(UserType),
-      resolve: async ({ id }: Static<typeof userSchema>, _: unknown, { db }: Context) => {
+      resolve: async ({ id }: User, _: unknown, { db }: Context) => {
         return await db.user.findMany({
           where: {
             subscribedToUser: {

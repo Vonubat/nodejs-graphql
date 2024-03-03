@@ -1,7 +1,8 @@
-import { GraphQLList, GraphQLNonNull } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLResolveInfo } from 'graphql';
 
 import { Context, idField } from '../types/common.js';
 import { PostType } from '../types/posts.js';
+import { postsDataLoader } from './loader.js';
 
 export const PostQueries = {
   post: {
@@ -9,8 +10,19 @@ export const PostQueries = {
     args: {
       ...idField,
     },
-    resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
-      return await db.post.findUnique({ where: { id } });
+    resolve: async (
+      _: unknown,
+      { id }: { id: string },
+      { db, dataloaders }: Context,
+      info: GraphQLResolveInfo,
+    ) => {
+      let dl = dataloaders.get(info.fieldNodes);
+      if (!dl) {
+        dl = postsDataLoader(db);
+        dataloaders.set(info.fieldNodes, dl);
+      }
+
+      return await dl.load(id);
     },
   },
   posts: {

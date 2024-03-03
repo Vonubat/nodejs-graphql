@@ -12,6 +12,8 @@ import { Static } from '@sinclair/typebox';
 import { profileSchema } from '../../profiles/schemas.js';
 import { UserType } from './users.js';
 
+export type Profile = Static<typeof profileSchema>;
+
 const profileFields = {
   isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
   yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
@@ -32,21 +34,13 @@ export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
     ...profileFields,
     user: {
       type: UserType,
-      resolve: async (
-        { userId }: Static<typeof profileSchema>,
-        _: unknown,
-        { db }: Context,
-      ) => {
+      resolve: async ({ userId }: Profile, _: unknown, { db }: Context) => {
         return await db.user.findUnique({ where: { id: userId } });
       },
     },
     memberType: {
       type: MemberType,
-      resolve: async (
-        { memberTypeId }: Static<typeof profileSchema>,
-        _: unknown,
-        { db }: Context,
-      ) => {
+      resolve: async ({ memberTypeId }: Profile, _: unknown, { db }: Context) => {
         return await db.memberType.findUnique({ where: { id: memberTypeId } });
       },
     },

@@ -6,6 +6,10 @@ import {
 } from 'graphql';
 import { UUIDType } from '../types/uuid.js';
 import { idField } from './common.js';
+import { Static } from '@sinclair/typebox';
+import { postSchema } from '../../posts/schemas.js';
+
+export type Post = Static<typeof postSchema>;
 
 const postFields = {
   title: { type: new GraphQLNonNull(GraphQLString) },

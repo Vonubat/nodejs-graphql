@@ -1,7 +1,8 @@
-import { GraphQLList, GraphQLNonNull } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLResolveInfo } from 'graphql';
 
 import { UserType } from '../types/users.js';
 import { Context, idField } from '../types/common.js';
+import { usersDataLoader } from './loader.js';
 
 export const UserQueries = {
   user: {
@@ -9,8 +10,19 @@ export const UserQueries = {
     args: {
       ...idField,
     },
-    resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
-      return await db.user.findUnique({ where: { id } });
+    resolve: async (
+      _: unknown,
+      { id }: { id: string },
+      { db, dataloaders }: Context,
+      info: GraphQLResolveInfo,
+    ) => {
+      let dl = dataloaders.get(info.fieldNodes);
+      if (!dl) {
+        dl = usersDataLoader(db);
+        dataloaders.set(info.fieldNodes, dl);
+      }
+
+      return await dl.load(id);
     },
   },
   users: {
