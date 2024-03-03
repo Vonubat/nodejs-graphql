@@ -7,7 +7,7 @@ import {
 } from 'graphql';
 import { MemberTypeId } from '../../member-types/schemas.js';
 
-const MemberTypeIdEnum = new GraphQLEnumType({
+export const MemberTypeIdEnum = new GraphQLEnumType({
   name: 'MemberTypeId',
   values: {
     basic: { value: MemberTypeId.BASIC },

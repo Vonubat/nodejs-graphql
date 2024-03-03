@@ -14,7 +14,7 @@ const userFields = {
 
 export const UserType = new GraphQLObjectType({
   name: 'User',
-  description: 'User type',
+  description: 'UserType',
   fields: {
     ...idField,
     ...userFields,
