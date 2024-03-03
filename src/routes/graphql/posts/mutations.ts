@@ -2,8 +2,9 @@ import { GraphQLNonNull } from 'graphql';
 import { Static } from '@sinclair/typebox';
 
 import { Context, idField } from '../types/common.js';
-import { CreatePostInput, PostType } from '../types/posts.js';
+import { ChangePostInput, CreatePostInput, PostType } from '../types/posts.js';
 import { createPostSchema } from '../../posts/schemas.js';
+import { UUIDType } from '../types/uuid.js';
 
 export const PostMutations = {
   createPost: {
@@ -19,7 +20,7 @@ export const PostMutations = {
   },
   changePost: {
     type: new GraphQLNonNull(PostType),
-    args: { ...idField, dto: { type: CreatePostInput } },
+    args: { ...idField, dto: { type: ChangePostInput } },
     resolve: async (
       _: unknown,
       { id, dto: data }: { id: string; dto: Static<(typeof createPostSchema)['body']> },
@@ -29,10 +30,11 @@ export const PostMutations = {
     },
   },
   deletePost: {
-    type: new GraphQLNonNull(PostType),
+    type: UUIDType,
     args: { ...idField },
     resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
-      return await db.post.delete({ where: { id } });
+      await db.post.delete({ where: { id } });
+      return id;
     },
   },
 };

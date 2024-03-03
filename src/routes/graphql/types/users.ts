@@ -17,6 +17,11 @@ const userFields = {
   balance: { type: new GraphQLNonNull(GraphQLFloat) },
 };
 
+const userFieldsPartial = {
+  name: { type: GraphQLString },
+  balance: { type: GraphQLFloat },
+};
+
 export const UserType: GraphQLObjectType = new GraphQLObjectType<
   Static<typeof userSchema>,
   Context
@@ -72,5 +77,12 @@ export const CreateUserInput = new GraphQLInputObjectType({
   name: 'CreateUserInput',
   fields: {
     ...userFields,
+  },
+});
+
+export const ChangeUserInput = new GraphQLInputObjectType({
+  name: 'ChangeUserInput',
+  fields: {
+    ...userFieldsPartial,
   },
 });

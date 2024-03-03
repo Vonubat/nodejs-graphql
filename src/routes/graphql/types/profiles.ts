@@ -19,6 +19,12 @@ const profileFields = {
   memberTypeId: { type: new GraphQLNonNull(MemberTypeIdEnum) },
 };
 
+const profileFieldsPartial = {
+  isMale: { type: GraphQLBoolean },
+  yearOfBirth: { type: GraphQLInt },
+  memberTypeId: { type: MemberTypeIdEnum },
+};
+
 export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
   name: 'ProfileType',
   fields: () => ({
@@ -51,5 +57,12 @@ export const CreateProfileInput = new GraphQLInputObjectType({
   name: 'CreateProfileInput',
   fields: {
     ...profileFields,
+  },
+});
+
+export const ChangeProfileInput = new GraphQLInputObjectType({
+  name: 'ChangeProfileInput',
+  fields: {
+    ...profileFieldsPartial,
   },
 });

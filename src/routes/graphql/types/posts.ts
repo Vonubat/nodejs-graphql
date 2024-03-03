@@ -13,6 +13,12 @@ const postFields = {
   authorId: { type: new GraphQLNonNull(UUIDType) },
 };
 
+const postFieldsPartial = {
+  title: { type: GraphQLString },
+  content: { type: GraphQLString },
+  authorId: { type: UUIDType },
+};
+
 export const PostType = new GraphQLObjectType({
   name: 'PostType',
   fields: () => ({
@@ -25,5 +31,12 @@ export const CreatePostInput = new GraphQLInputObjectType({
   name: 'CreatePostInput',
   fields: {
     ...postFields,
+  },
+});
+
+export const ChangePostInput = new GraphQLInputObjectType({
+  name: 'ChangePostInput',
+  fields: {
+    ...postFieldsPartial,
   },
 });

@@ -1,9 +1,14 @@
 import { GraphQLNonNull } from 'graphql';
 
 import { Context, idField } from '../types/common.js';
-import { CreateProfileInput, ProfileType } from '../types/profiles.js';
+import {
+  ChangeProfileInput,
+  CreateProfileInput,
+  ProfileType,
+} from '../types/profiles.js';
 import { createProfileSchema } from '../../profiles/schemas.js';
 import { Static } from '@sinclair/typebox';
+import { UUIDType } from '../types/uuid.js';
 
 export const ProfileMutations = {
   createProfile: {
@@ -19,7 +24,7 @@ export const ProfileMutations = {
   },
   changeProfile: {
     type: new GraphQLNonNull(ProfileType),
-    args: { ...idField, dto: { type: CreateProfileInput } },
+    args: { ...idField, dto: { type: ChangeProfileInput } },
     resolve: async (
       _: unknown,
       {
@@ -32,10 +37,11 @@ export const ProfileMutations = {
     },
   },
   deleteProfile: {
-    type: new GraphQLNonNull(ProfileType),
+    type: UUIDType,
     args: { ...idField },
     resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
-      return await db.profile.delete({ where: { id } });
+      await db.profile.delete({ where: { id } });
+      return id;
     },
   },
 };
