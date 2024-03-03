@@ -10,11 +10,10 @@ export const PostMutations = {
     type: new GraphQLNonNull(PostType),
     args: { dto: { type: CreatePostInput } },
     resolve: async (
-      __: unknown,
+      _: unknown,
       { dto: data }: { dto: Static<(typeof createPostSchema)['body']> },
       { db }: Context,
     ) => {
-      console.log('POST_DTO:', data);
       return await db.post.create({ data });
     },
   },
@@ -22,7 +21,7 @@ export const PostMutations = {
     type: new GraphQLNonNull(PostType),
     args: { ...idField, dto: { type: CreatePostInput } },
     resolve: async (
-      __: unknown,
+      _: unknown,
       { id, dto: data }: { id: string; dto: Static<(typeof createPostSchema)['body']> },
       { db }: Context,
     ) => {
@@ -32,7 +31,7 @@ export const PostMutations = {
   deletePost: {
     type: new GraphQLNonNull(PostType),
     args: { ...idField },
-    resolve: async (__: unknown, { id }: { id: string }, { db }: Context) => {
+    resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
       return await db.post.delete({ where: { id } });
     },
   },

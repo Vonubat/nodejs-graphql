@@ -14,12 +14,11 @@ const postFields = {
 };
 
 export const PostType = new GraphQLObjectType({
-  name: 'Post',
-  description: 'Post type',
-  fields: {
+  name: 'PostType',
+  fields: () => ({
     ...idField,
     ...postFields,
-  },
+  }),
 });
 
 export const CreatePostInput = new GraphQLInputObjectType({

@@ -6,7 +6,7 @@ import { MemberTypeId } from '../../member-types/schemas.js';
 export const MemberTypesQueries = {
   memberTypes: {
     type: new GraphQLNonNull(new GraphQLList(MemberType)),
-    resolve: async (__: unknown, _: unknown, { db }: Context) => {
+    resolve: async (_: unknown, __: unknown, { db }: Context) => {
       return await db.memberType.findMany();
     },
   },
@@ -15,7 +15,7 @@ export const MemberTypesQueries = {
     args: {
       ...memberTypesIdField,
     },
-    resolve: async (__: unknown, { id }: { id: MemberTypeId }, { db }: Context) => {
+    resolve: async (_: unknown, { id }: { id: MemberTypeId }, { db }: Context) => {
       return await db.memberType.findUnique({ where: { id } });
     },
   },

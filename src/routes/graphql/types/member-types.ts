@@ -26,7 +26,6 @@ const memberTypesFields = {
 
 export const MemberType = new GraphQLObjectType({
   name: 'MemberType',
-  description: 'Member type',
   fields: () => ({
     ...memberTypesIdField,
     ...memberTypesFields,

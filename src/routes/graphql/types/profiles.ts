@@ -6,8 +6,11 @@ import {
   GraphQLObjectType,
 } from 'graphql';
 import { UUIDType } from '../types/uuid.js';
-import { MemberTypeIdEnum } from './member-types.js';
-import { idField } from './common.js';
+import { MemberType, MemberTypeIdEnum } from './member-types.js';
+import { Context, idField } from './common.js';
+import { Static } from '@sinclair/typebox';
+import { profileSchema } from '../../profiles/schemas.js';
+import { UserType } from './users.js';
 
 const profileFields = {
   isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
@@ -16,12 +19,32 @@ const profileFields = {
   memberTypeId: { type: new GraphQLNonNull(MemberTypeIdEnum) },
 };
 
-export const ProfileType = new GraphQLObjectType({
+export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
   name: 'ProfileType',
-  fields: {
+  fields: () => ({
     ...idField,
     ...profileFields,
-  },
+    user: {
+      type: UserType,
+      resolve: async (
+        { userId }: Static<typeof profileSchema>,
+        _: unknown,
+        { db }: Context,
+      ) => {
+        return await db.user.findUnique({ where: { id: userId } });
+      },
+    },
+    memberType: {
+      type: MemberType,
+      resolve: async (
+        { memberTypeId }: Static<typeof profileSchema>,
+        _: unknown,
+        { db }: Context,
+      ) => {
+        return await db.memberType.findUnique({ where: { id: memberTypeId } });
+      },
+    },
+  }),
 });
 
 export const CreateProfileInput = new GraphQLInputObjectType({

@@ -10,11 +10,10 @@ export const ProfileMutations = {
     type: new GraphQLNonNull(ProfileType),
     args: { dto: { type: CreateProfileInput } },
     resolve: async (
-      __: unknown,
+      _: unknown,
       { dto: data }: { dto: Static<(typeof createProfileSchema)['body']> },
       { db }: Context,
     ) => {
-      console.log('PROFILE_DTO:', data);
       return await db.profile.create({ data });
     },
   },
@@ -22,7 +21,7 @@ export const ProfileMutations = {
     type: new GraphQLNonNull(ProfileType),
     args: { ...idField, dto: { type: CreateProfileInput } },
     resolve: async (
-      __: unknown,
+      _: unknown,
       {
         id,
         dto: data,
@@ -35,7 +34,7 @@ export const ProfileMutations = {
   deleteProfile: {
     type: new GraphQLNonNull(ProfileType),
     args: { ...idField },
-    resolve: async (__: unknown, { id }: { id: string }, { db }: Context) => {
+    resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
       return await db.profile.delete({ where: { id } });
     },
   },

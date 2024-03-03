@@ -10,11 +10,10 @@ export const UserMutations = {
     type: new GraphQLNonNull(UserType),
     args: { dto: { type: CreateUserInput } },
     resolve: async (
-      __: unknown,
+      _: unknown,
       { dto: data }: { dto: Static<(typeof createUserSchema)['body']> },
       { db }: Context,
     ) => {
-      console.log('USER_DTO:', data);
       return await db.user.create({ data });
     },
   },
@@ -22,7 +21,7 @@ export const UserMutations = {
     type: new GraphQLNonNull(UserType),
     args: { ...idField, dto: { type: CreateUserInput } },
     resolve: async (
-      __: unknown,
+      _: unknown,
       { id, dto: data }: { id: string; dto: Static<(typeof createUserSchema)['body']> },
       { db }: Context,
     ) => {
@@ -32,7 +31,7 @@ export const UserMutations = {
   deleteUser: {
     type: new GraphQLNonNull(UserType),
     args: { ...idField },
-    resolve: async (__: unknown, { id }: { id: string }, { db }: Context) => {
+    resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
       return await db.user.delete({ where: { id } });
     },
   },
