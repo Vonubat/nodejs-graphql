@@ -1,8 +1,7 @@
-import { GraphQLList, GraphQLNonNull, GraphQLResolveInfo } from 'graphql';
+import { GraphQLList, GraphQLNonNull } from 'graphql';
 
 import { Context, idField } from '../types/common.js';
 import { ProfileType } from '../types/profiles.js';
-import { profilesDataLoader } from './loader.js';
 
 export const ProfileQueries = {
   profile: {
@@ -10,19 +9,8 @@ export const ProfileQueries = {
     args: {
       ...idField,
     },
-    resolve: async (
-      _: unknown,
-      { id }: { id: string },
-      { db, dataloaders }: Context,
-      info: GraphQLResolveInfo,
-    ) => {
-      let dl = dataloaders.get(info.fieldNodes);
-      if (!dl) {
-        dl = profilesDataLoader(db);
-        dataloaders.set(info.fieldNodes, dl);
-      }
-
-      return await dl.load(id);
+    resolve: async (_: unknown, { id }: { id: string }, { db }: Context) => {
+      return await db.profile.findUnique({ where: { id } });
     },
   },
   profiles: {
